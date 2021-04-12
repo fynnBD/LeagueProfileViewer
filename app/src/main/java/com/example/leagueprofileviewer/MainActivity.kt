@@ -8,7 +8,7 @@ import android.widget.EditText
 import com.example.leagueprofileviewer.datatypes.summoner
 import com.example.leagueprofileviewer.netword.API
 
-class MainActivity : AppCompatActivity() {
+class MainActivity : AppCompatActivity(), UIupdateInterface {
     val API : API = API(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -22,12 +22,15 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getSummoner(name : String) {
-        var intent = Intent(this, SummonerProfile::class.java)
-        startActivity(intent)
+        API.getSummonerByName(name)
     }
 
-    fun summonerCallback(summoner: summoner?)
-    {
-        println(summoner)
+    override fun summonerCallback(summoner: summoner?) {
+        var intent = Intent(this, SummonerProfile::class.java)
+        if (summoner != null) {
+            intent.putExtra("piid", summoner.puuid)
+            startActivity(intent)
+        }
     }
+
 }

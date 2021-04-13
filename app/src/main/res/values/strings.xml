@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">LeagueProfileViewer</string>
+    <string name="SECRET_KEY">RGAPI-dbc57848-c40f-4d3f-8b56-5a56acca409d</string>
 </resources>

@@ -1,13 +1,11 @@
 package com.example.leagueprofileviewer.netword
 
-import android.media.Image
-import android.nfc.tech.NfcF.get
 import com.example.leagueprofileviewer.UIupdateInterface
-import com.example.leagueprofileviewer.datatypes.summoner
-import com.squareup.picasso.Picasso
+import com.example.leagueprofileviewer.datatypes.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.reflect.KFunction1
 
 class API(val context : UIupdateInterface) {
     var isComplete : Boolean = false;
@@ -28,7 +26,7 @@ class API(val context : UIupdateInterface) {
                 }
                 else
                 {
-                    println("fail")
+                    println("fail on get summoner")
                     println(response.message())
                 }
             }
@@ -53,7 +51,7 @@ class API(val context : UIupdateInterface) {
                 }
                 else
                 {
-                    println("fail")
+                    println("fail on get by PUUID")
                     println(response.message())
                 }
             }
@@ -63,4 +61,56 @@ class API(val context : UIupdateInterface) {
             }
         })
     }
+
+    fun getMatchHistoryById(id: String, callBackFunction: (ArrayList<Match>) -> Unit)
+    {
+        val request =ServiceBuilder.buildService(LeagueInterface::class.java)
+        val call = request.getMatchIdsByID(id)
+
+        call.enqueue(object : Callback<MatchHistory>{
+            override fun onResponse(call: Call<MatchHistory>, response: Response<MatchHistory>) {
+                if (response.isSuccessful) {
+                    println("yay")
+                    callBackFunction(response.body()!!.matches)
+                }
+                else
+                {
+                    println("Fail on get match History")
+                }
+            }
+
+            override fun onFailure(call: Call<MatchHistory>, t: Throwable) {
+                println("AH FUCK")
+            }
+
+        })
+    }
+
+    fun getChampInfo(callBackFunction: KFunction1<HashMap<String, Champ>, Unit>) {
+        val request =DDServiceBuilder.buildService(LeagueInterface::class.java)
+        val call = request.DDChampion()
+        println(call.request().url().toString())
+
+        call.enqueue(object : Callback<ChampInfo>
+        {
+            override fun onResponse(call: Call<ChampInfo>, response: Response<ChampInfo>) {
+                if(response.isSuccessful)
+                {
+                    callBackFunction(response.body()?.data!!)
+                }
+                else
+                {
+                    println("fail")
+                    println(response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<ChampInfo>, t: Throwable) {
+                t.printStackTrace()
+            }
+
+        })
+    }
+
+
 }

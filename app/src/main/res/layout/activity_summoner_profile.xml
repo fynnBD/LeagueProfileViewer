@@ -91,11 +91,26 @@
                     android:layout_weight=".6"
                     android:orientation="horizontal">
 
-                    <androidx.recyclerview.widget.RecyclerView
-                        android:id="@+id/matchHistoryRecycler"
+                    <FrameLayout
+                        android:id="@+id/matchLayout"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:layout_weight=".6" />
+                        android:layout_weight=".6">
+
+                        <ProgressBar
+                            android:id="@+id/matchLoading"
+                            style="?android:attr/progressBarStyle"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent" />
+
+                        <androidx.recyclerview.widget.RecyclerView
+                            android:id="@+id/matchHistoryRecycler"
+                            android:layout_width="match_parent"
+                            android:layout_height="match_parent"
+                            android:layout_weight=".6"
+                            android:background="#000000" />
+                    </FrameLayout>
+
                 </LinearLayout>
             </LinearLayout>
 

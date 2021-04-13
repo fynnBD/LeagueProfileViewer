@@ -1,6 +1,6 @@
 package com.example.leagueprofileviewer
 
-import android.content.Context
+import android.graphics.Color
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,21 +12,39 @@ import com.example.leagueprofileviewer.datatypes.Champ
 import com.example.leagueprofileviewer.datatypes.Match
 import com.squareup.picasso.Picasso
 
+/**
+ * Adapter for the match history list
+ *
+ * Uses match history information, combined with champion data to build
+ * a list of the last 40 or so matches associated with the provided account
+ *
+ * @param matches list of the last 40 or so matches, built from JSON object
+ * @param champData preloaded champ info set, contains names, Ids, abilities and image URLS
+ */
 class MatchHistoryAdapter(
-    var matches: ArrayList<Match>,
-    var champData: HashMap<String, Champ>?,
-    context: Context
+        var matches: List<Match>?,
+        var champData: HashMap<String, Champ>?,
+        var accountId: String
 ) :
     RecyclerView.Adapter<MatchHistoryAdapter.ListingHolder>()
 {
-    val context = context
 
+
+    /**
+     * Template holder class to hold references to each part of the match-cardview
+     */
     class ListingHolder(view : View) : RecyclerView.ViewHolder(view)
     {
         var image = view.findViewById<ImageView>(R.id.image)
         var title = view.findViewById<TextView>(R.id.title)
         var desc = view.findViewById<TextView>(R.id.desc)
         var holder = view.findViewById<CardView>(R.id.carView)
+        var p0 = view.findViewById<TextView>(R.id.player0)
+        var p1 = view.findViewById<TextView>(R.id.player1)
+        var p2 = view.findViewById<TextView>(R.id.player2)
+        var p3 = view.findViewById<TextView>(R.id.player3)
+        var p4 = view.findViewById<TextView>(R.id.player4)
+        var playerList = arrayOf(p0, p1, p2, p3, p4)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ListingHolder {
@@ -35,14 +53,35 @@ class MatchHistoryAdapter(
     }
 
     override fun onBindViewHolder(holder: ListingHolder, position: Int) {
-        var selectedMatch =matches[position]
-        getImageFromChampId(selectedMatch.champion, holder.image)
-        //setWinLoseBackGround(holder, selectedMatch.)
+        println("EAT MY ASS WHORE")
+        var selectedMatch = matches?.get(position)
+        if (selectedMatch != null) {
+            getImageFromChampId(selectedMatch.champion, holder.image)
+            setPlayers(holder, selectedMatch)
+            holder.title.text = selectedMatch.lane
+            holder.desc.text = selectedMatch.role
+        }
+
     }
 
     private fun getImageFromChampId(champion: String, image: ImageView){
         var url = "https://ddragon.leagueoflegends.com/cdn/11.7.1/img/champion/${getChampNameFromId(champion)}.png"
         Picasso.get().load(url).into(image)
+    }
+
+    private fun setBackgroundColor(base : CardView, selectedMatch : Match)
+    {
+        base.setBackgroundColor(Color.BLUE)
+    }
+
+    private fun setPlayers(holder : ListingHolder, selectedMatch: Match)
+    {
+        var index = 0
+        for(i in selectedMatch.matchDetails.participantIdentities.subList(0,5))
+        {
+            holder.playerList[index].text = i.player.summonerName
+            index++
+        }
     }
 
     fun getChampNameFromId(id : String) : String
@@ -59,6 +98,6 @@ class MatchHistoryAdapter(
     }
 
     override fun getItemCount(): Int {
-        return matches.size
+        return matches!!.size
     }
 }

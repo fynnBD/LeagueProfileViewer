@@ -2,6 +2,7 @@ package com.example.leagueprofileviewer.netword
 
 import com.example.leagueprofileviewer.datatypes.ChampInfo
 import com.example.leagueprofileviewer.datatypes.MatchHistory
+import com.example.leagueprofileviewer.datatypes.MatchInfo
 import com.example.leagueprofileviewer.datatypes.summoner
 import retrofit2.Call
 import retrofit2.http.GET
@@ -22,6 +23,10 @@ interface LeagueInterface {
     @GET("/lol/match/v4/matchlists/by-account/{encryptedAccountId}")
     @Headers("X-Riot-Token: RGAPI-f1ea1849-9856-4e6f-a3c5-9a1432ac1287")
     fun getMatchIdsByID(@Path("encryptedAccountId")encryptedAccountId : String) : Call<MatchHistory>
+
+    @GET("/lol/match/v4/matches/{matchId}")
+    @Headers("X-Riot-Token: RGAPI-f1ea1849-9856-4e6f-a3c5-9a1432ac1287")
+    fun getMatchDetails(@Path("matchId")matchId : String) : Call<MatchInfo>
 
     @GET("/cdn/11.7.1/data/en_US/champion.json")
     fun DDChampion() : Call<ChampInfo>

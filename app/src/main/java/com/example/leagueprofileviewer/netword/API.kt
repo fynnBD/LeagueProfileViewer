@@ -8,7 +8,7 @@ import retrofit2.Response
 import kotlin.reflect.KFunction1
 
 class API(val context : UIupdateInterface) {
-    var isComplete : Boolean = false;
+    var isComplete : Boolean = false
     var result : Any? = null
 
     fun getSummonerByName(name : String)
@@ -62,7 +62,7 @@ class API(val context : UIupdateInterface) {
         })
     }
 
-    fun getMatchHistoryById(id: String, callBackFunction: (ArrayList<Match>) -> Unit)
+    fun getMatchHistoryById(id: String, callBackFunction: (List<Match>) -> Unit)
     {
         val request =ServiceBuilder.buildService(LeagueInterface::class.java)
         val call = request.getMatchIdsByID(id)
@@ -106,6 +106,30 @@ class API(val context : UIupdateInterface) {
             }
 
             override fun onFailure(call: Call<ChampInfo>, t: Throwable) {
+                t.printStackTrace()
+            }
+
+        })
+    }
+
+    fun getMatchDetails(gameId: String, index: Int, maxIndex : Int, callBackFunction: (MatchInfo, Int, Int) -> Unit) {
+        val request = ServiceBuilder.buildService(LeagueInterface::class.java)
+        val call = request.getMatchDetails(gameId)
+
+        call.enqueue(object : Callback<MatchInfo>
+        {
+            override fun onResponse(call: Call<MatchInfo>, response: Response<MatchInfo>) {
+                if(response.isSuccessful)
+                {
+                    callBackFunction(response.body()!!, index, maxIndex)
+                }
+                else
+                {
+                    println(response.message())
+                }
+            }
+
+            override fun onFailure(call: Call<MatchInfo>, t: Throwable) {
                 t.printStackTrace()
             }
 
